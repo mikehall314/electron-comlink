@@ -1,0 +1,34 @@
+{
+  "name": "electron-comlink",
+  "version": "0.0.1",
+  "description": "Electron compatibility layer for Comlink",
+  "main": "ElectronMessageAdapter.js",
+  "homepage": "https://github.com/mikehall314/electron-comlink",
+  "engines": {
+    "electron": "1.7.x"
+  },
+  "files": [
+    "ElectronMessageAdapter.js"
+  ],
+  "scripts": {
+    "test": "npx --no-install tape test",
+    "pretest": "npm run lint",
+    "lint": "npx --no-install eslint *.js test/**/*.js",
+    "test:cover": "npx --no-install istanbul cover test"
+  },
+  "repository": "mikehall314/electron-comlink",
+  "keywords": [
+    "electron",
+    "rpc",
+    "comlink"
+  ],
+  "author": "Mike Hall <mikehall314@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^4.12.1",
+    "istanbul": "^0.4.5",
+    "sinon": "^4.1.2",
+    "tape": "^4.8.0"
+  },
+  "dependencies": {}
+}

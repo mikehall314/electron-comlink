@@ -78,12 +78,8 @@ test("detect running in a non-electron context", assert => {
 
     assert.plan(1);
 
-    try {
-        new ElectronMessageAdapter({}, electron); // eslint-disable-line no-new
-    } catch (e) {
-        const expect = "Cannot create adapter outside of an Electron context";
-        assert.equal(e.message, expect, "Throws for non-Electron context");
-    }
+    const expect = /Cannot create adapter outside of an Electron context/;
+    assert.throws(_ => new ElectronMessageAdapter({}, electron), expect, "Throws for non-Electron context");
 
     assert.end();
 });
@@ -183,21 +179,17 @@ test("catch attempted transferList", assert => {
 
     const endpoint = new ElectronMessageAdapter(window, electron);
 
-    try {
+    // Empty transfer list is okay
+    endpoint.postMessage("a message", []);
+    const messageWasSent = electron.ipcRenderer.send.calledWith("electron-comlink--message", "a message");
+    assert.ok(messageWasSent, "Empty transferList is ok");
 
-        // Empty transfer list is okay
-        endpoint.postMessage("a message", []);
-        const messageWasSent = electron.ipcRenderer.send.calledWith("electron-comlink--message", "a message");
-        assert.ok(messageWasSent, "Empty transferList is ok");
+    // Transferring a value should throw
+    const buf = new ArrayBuffer(0);
+    const expect = /transferList is not supported/;
+    assert.throws(_ => endpoint.postMessage("another message", [buf]), expect, "Catch attempts to transfer value");
 
-        // This transfer list should throw
-        const buf = new ArrayBuffer(0);
-        endpoint.postMessage("another message", [buf]);
-
-    } catch (e) {
-        assert.equal(e.message, "transferList is not supported", "Catch attempts to transfer values");
-    }
-
+    // Clean up
     electron.ipcRenderer.send.reset();
     assert.end();
 });

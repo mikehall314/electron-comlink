@@ -88,7 +88,7 @@ class ElectronMessageAdapter {
      * @return {*} truthy if this is an electron BrowserWindow
      */
     targetIsElectronWindow(w) {
-        return typeof w === "object" && w instanceof this.electron.BrowserWindow;
+        return typeof w === "object" && this.electron.BrowserWindow && w instanceof this.electron.BrowserWindow;
     }
 
     /**

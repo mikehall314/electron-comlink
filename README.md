@@ -10,7 +10,6 @@ An adapter to allow Electron to use [Comlink](https://github.com/GoogleChromeLab
 ## Communicate from the background to the renderer
 ```js
 // In the renderer process
-const {Comlink} = require("comlinkjs");
 const {ElectronMessageAdapter} = require("electron-comlink");
 const endpoint = new ElectronMessageAdapter(window);
 
@@ -20,6 +19,7 @@ const exposed = {
     }
 };
 
+const {Comlink} = require("comlinkjs");
 Comlink.expose(exposed, endpoint);
 ```
 ```js
@@ -61,10 +61,10 @@ Comlink.expose(exposed, endpoint);
 ```
 ```js
 // In the renderer process
-const {Comlink} = require("comlinkjs");
 const {ElectronMessageAdapter} = require("electron-comlink");
 const endpoint = new ElectronMessageAdapter(window);
 
+const {Comlink} = require("comlinkjs");
 const link = Comlink.proxy(endpoint);
 await link.doSomethingElse(); // Returns "Did something in the background"
 ```
@@ -76,4 +76,4 @@ background process. This means we have to patch `MessagePort` on to `global`, *b
 will crash.
 
 # Known Bugs
-* The `transferList` argument to `.postMessage()` is not currently supported as, AFAIK, Electron lacks this mechanism.
+- The `transferList` argument to `.postMessage()` is not currently supported as, AFAIK, Electron lacks this mechanism.

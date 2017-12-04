@@ -11,10 +11,10 @@
     "ElectronMessageAdapter.js"
   ],
   "scripts": {
-    "test": "npx --no-install tape test",
+    "test": "./node_modules/.bin/tape test",
     "pretest": "npm run lint",
-    "lint": "npx --no-install eslint *.js test/**/*.js",
-    "test:cover": "npx --no-install istanbul cover test"
+    "lint": "./node_modules/.bin/eslint *.js test/**/*.js",
+    "test:cover": "./node_modules/.bin/istanbul cover test"
   },
   "repository": "mikehall314/electron-comlink",
   "keywords": [

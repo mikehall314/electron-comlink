@@ -224,3 +224,23 @@ test("wrappers call inner function", assert => {
 
     assert.end();
 });
+
+test("patching MessagePort", assert => {
+
+    assert.plan(4);
+
+    // Test patching MessagePort onto an object
+    const o = {};
+    ElectronMessageAdapter.patchMessagePort(o);
+    assert.ok(o.MessagePort, "MessagePort is patched onto the object");
+    assert.throws(_ => new o.MessagePort(), "Throwing if MessagePort is used");
+
+    // Test an existing MessagePort is respected
+    class MessagePort {}
+    o.MessagePort = MessagePort;
+    ElectronMessageAdapter.patchMessagePort(o);
+    assert.equal(o.MessagePort, MessagePort, "MessagePort is not overwritten");
+    assert.doesNotThrow(_ => new o.MessagePort(), "Original MessagePort is respected");
+
+    assert.end();
+});

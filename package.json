@@ -1,6 +1,6 @@
 {
   "name": "electron-comlink",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Electron compatibility layer for Comlink",
   "main": "ElectronMessageAdapter.js",
   "homepage": "https://github.com/mikehall314/electron-comlink",

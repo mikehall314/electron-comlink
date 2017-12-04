@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mikehall314/electron-comlink.svg?branch=master)](https://travis-ci.org/mikehall314/electron-comlink)
+
 # electron-comlink
 An adapter to allow Electron to use [Comlink](https://github.com/GoogleChromeLabs/comlink) to communicate between the background and renderer processes.
 

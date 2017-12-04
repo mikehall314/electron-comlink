@@ -29,10 +29,11 @@ const win = new BrowserWindow({width: 800, height: 600});
 
 // .. configure your window ...
 
-const {Comlink} = require("comlinkjs");
 const {ElectronMessageAdapter} = require("electron-comlink");
 const endpoint = new ElectronMessageAdapter(win);
+ElectronMessageAdapter.patchMessagePort(global); // Required because Comlink expects the MessagePort global to exist
 
+const {Comlink} = require("comlinkjs");
 const link = Comlink.proxy(endpoint);
 await link.doSomething(); // Returns "Did something in the renderer"
 ```
@@ -45,9 +46,9 @@ const win = new BrowserWindow({width: 800, height: 600});
 
 // .. configure your window ...
 
-const {Comlink} = require("comlinkjs");
 const {ElectronMessageAdapter} = require("electron-comlink");
 const endpoint = new ElectronMessageAdapter(win);
+ElectronMessageAdapter.patchMessagePort(global);
 
 const exposed = {
     doSomethingElse() {
@@ -55,6 +56,7 @@ const exposed = {
     }
 };
 
+const {Comlink} = require("comlinkjs");
 Comlink.expose(exposed, endpoint);
 ```
 ```js
@@ -67,6 +69,11 @@ const link = Comlink.proxy(endpoint);
 await link.doSomethingElse(); // Returns "Did something in the background"
 ```
 
+# Gotchas
+Comlink currently expects `MessagePort` to be available on the global object, which is not the case in Electron's
+background process. This means we have to patch `MessagePort` on to `global`, *before* loading Comlink, by calling
+`ElectronMessageAdapter.patchMessagePort(global);`. If you load Comlink before patching `MessagePort` then Electron
+will crash.
+
 # Known Bugs
-* Currently, this library doesn't work at all 😛 because `Comlink` is looking for `MessagePort` which doesn't exist in NodeJS. Hopefully that is something which we can fix!
-* The `transferList` argument to `.postMessage()` is not currently supported, as Electron lacks this mechanism, AFAIK!
+* The `transferList` argument to `.postMessage()` is not currently supported as, AFAIK, Electron lacks this mechanism.

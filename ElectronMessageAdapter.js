@@ -26,6 +26,23 @@ class ElectronMessageAdapter {
     }
 
     /**
+     * patchMessagePort()
+     * Patches a MessagePort variable onto the passed object (should be the global object)
+     * for places where MessagePort is not defined (e.g. NodeJS). I hope this can be removed, if
+     * Comlink can be fixed to not expect this global to exist.
+     *
+     * @static
+     * @param {object} o The object to patch
+     */
+    static patchMessagePort(o) {
+        o.MessagePort = o.MessagePort || class MessagePort {
+            constructor() {
+                throw new Error("MessagePort is not supported");
+            }
+        };
+    }
+
+    /**
      * Class Constructor
      * Builds an electron message adapter from the passed window.
      *

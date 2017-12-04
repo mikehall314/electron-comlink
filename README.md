@@ -68,4 +68,5 @@ await link.doSomethingElse(); // Returns "Did something in the background"
 ```
 
 # Known Bugs
-Currently, this library doesn't work at all 😛 because `Comlink` is looking for `MessagePort` which doesn't exist in NodeJS. Hopefully that is something which we can fix!
+* Currently, this library doesn't work at all 😛 because `Comlink` is looking for `MessagePort` which doesn't exist in NodeJS. Hopefully that is something which we can fix!
+* The `transferList` argument to `.postMessage()` is not currently supported, as Electron lacks this mechanism, AFAIK!

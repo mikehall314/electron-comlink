@@ -115,8 +115,8 @@ class ElectronMessageAdapter {
      * @param {object} w
      * @return {*} truthy if this is an electron renderer window object
      */
-    targetIsBackgroundProcess(window) {
-        return window.navigator && window.navigator.userAgent.includes("Electron");
+    targetIsBackgroundProcess(w) {
+        return w.navigator && w.navigator.userAgent.includes("Electron");
     }
 
     /**

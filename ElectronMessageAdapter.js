@@ -27,7 +27,7 @@ class ElectronMessageAdapter {
 
     /**
      * patchMessagePort()
-     * Patches a MessagePort variable onto the passed object (should be the global object)
+     * Patches a MessagePort property onto the passed object (should be the global object)
      * for places where MessagePort is not defined (e.g. NodeJS). I hope this can be removed, if
      * Comlink can be fixed to not expect this global to exist.
      *
@@ -47,8 +47,9 @@ class ElectronMessageAdapter {
      * Builds an electron message adapter from the passed window.
      *
      * @constructor
-     * @param {*} window A window object to wrap. This should be an instance of BrowserWindow if we are
-     *      running n the background, or just the window object if we are running in the renderer.
+     * @param {*} window A window object to wrap. This should be an instance of BrowserWindow
+     *          if we are communicating from the background, or just the window object if we
+     *          are communicating from the renderer.
      * @param {object} electron (optional) an instance of electron. You usually don't need to pass this.
      */
     constructor(window, electron) {
@@ -62,30 +63,30 @@ class ElectronMessageAdapter {
         // We have to wrap supplied event listeners to conform their API to
         // something Comlink can accept, but we also need be able to unbind these
         // listeners when Comlink asks us to. However, Comlink will be supplying
-        // it's original function object to us, not our wrapped version. So we
+        // its original function object to us, not our wrapped version. So we
         // need to be able to retrieve the wrapped function, when supplied with
-        // the original function -- which means a Map() is ideal for what we need!
+        // the original function -- which makes a Map() ideal.
         // The key will be the function object supplied by Comlink. The value
-        // will be our wrapped function. This means that when Comlink supplies the
-        // original function object to `removeEventListener()`, we can easily fetch
-        // our wrapped version from the Map and unbind it.
+        // will be our wrapped function. When Comlink supplies the original function
+        // object to `removeEventListener()`, we can easily fetch the wrapped version
+        // from the Map and unbind it.
         Object.defineProperty(this, "listeners", {value: new Map(), writable: false});
 
-        // If the developer has passed us an instance of BrowserWindow, then we are
-        // creating an adapter which lives in the Node background process and sends
-        // messages to this window. The message target is therefore `window.webContents`,
-        // and we will be calling `postMessage` on that. The IPC channel we our bind
-        // listeners to is going to be `electron.ipcMain`
+        // If the developer has passed us an instance of BrowserWindow, we should
+        // create an adapter which lives in the Node background process and sends
+        // messages to the BrowserWindow. The message target is therefore
+        // `window.webContents`, and we will call `postMessage` on that. The IPC
+        // channel we bind event listeners to is `electron.ipcMain`.
         if (this.targetIsElectronWindow(window)) {
             this.target = window.webContents;
             this.channel = electron.ipcMain;
             return;
         }
 
-        // If it looks like we are running in a renderer context, then we are creating an
-        // adapter which sends messages to the background process. In this case, the message
-        // target and the IPC channel are in-fact the same object, which is `electron.ipcRenderer`.
-        // We do our `postMessage` calls and bind our event listeners on this object
+        // If we are running in a renderer context, we are creating an adapter which
+        // sends messages to the background process. In this case, the message target
+        // and the IPC channel are the same object: `electron.ipcRenderer`. We do our
+        // `postMessage` calls and bind our event listeners to this object.
         if (this.targetIsBackgroundProcess(window)) {
             this.channel = this.target = electron.ipcRenderer;
             return;
@@ -128,7 +129,7 @@ class ElectronMessageAdapter {
      */
     addEventListener(channel, fn) {
 
-        // If we don't already have this listener on the map, then create a new entry
+        // If we don't already have this listener on the Map, then create a new entry.
         // We also need to attach the `data` value to the event, because that's where
         // Comlink expects to find it.
         if (this.listeners.has(fn) === false) {
@@ -138,7 +139,7 @@ class ElectronMessageAdapter {
         }
 
         // Bind the listener to the IPC channel, while trying to play nice with other
-        // software which might be trying to use this channel
+        // software which might be trying to use the IPC interface
         this.channel.on(ElectronMessageAdapter.PREFIX + channel, this.listeners.get(fn));
     }
 
@@ -157,7 +158,7 @@ class ElectronMessageAdapter {
             return;
         }
 
-        // Fetch the wrapped function from the Map and unbind it, then clean up the Map
+        // Fetch the wrapped function from the Map and unbind it, then clean up the Map.
         // I suppose this could break if the same function object was bound to two
         // different channel names? Something to think about!
         this.channel.removeListener(ElectronMessageAdapter.PREFIX + channel, this.listeners.get(fn));
@@ -173,11 +174,12 @@ class ElectronMessageAdapter {
      */
     postMessage(message, transferList) {
 
-        // The `transferList` parameter things like ArrayBuffers to be
+        // The `transferList` parameter allows things like ArrayBuffers to be
         // passed between contexts, with a transfer of ownership and everything.
-        // This is probably better than serializing and sending as a massive string,
-        // but I don't think Electron has this, so if the user is trying to leverage
-        // this feature then we can only tell them know. Unless you know better..?
+        // This is probably better than sending a massive serialized string,
+        // but I don't think Electron has this feature. If the user is trying to leverage
+        // the `transferList` then we can only tell them "no". Unless you know better..?
+        // In which case: https://github.com/mikehall314/electron-comlink
         if (transferList && transferList.length > 0) {
             throw new Error("transferList is not supported");
         }

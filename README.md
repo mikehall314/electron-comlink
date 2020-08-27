@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mikehall314/electron-comlink.svg?branch=master)](https://travis-ci.org/mikehall314/electron-comlink)
+[![Build Status](https://travis-ci.org/mikehall314/electron-comlink.svg?branch=main)](https://travis-ci.org/mikehall314/electron-comlink)
 
 # electron-comlink
 

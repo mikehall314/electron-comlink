@@ -1,5 +1,6 @@
 .DS_Store
 Thumbs.db
-/package-lock.json
 /node_modules
+/package-lock.json
 /coverage
+/.nyc_output

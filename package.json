@@ -1,34 +1,35 @@
 {
-  "name": "electron-comlink",
-  "version": "0.1.0",
-  "description": "Electron compatibility layer for Comlink",
-  "main": "ElectronMessageAdapter.js",
-  "homepage": "https://github.com/mikehall314/electron-comlink",
-  "engines": {
-    "electron": "1.7.x"
-  },
-  "files": [
-    "ElectronMessageAdapter.js"
-  ],
-  "scripts": {
-    "test": "./node_modules/.bin/tape test",
-    "pretest": "npm run lint",
-    "lint": "./node_modules/.bin/eslint *.js test/**/*.js",
-    "test:cover": "./node_modules/.bin/istanbul cover test"
-  },
-  "repository": "mikehall314/electron-comlink",
-  "keywords": [
-    "electron",
-    "rpc",
-    "comlink"
-  ],
-  "author": "Mike Hall <mikehall314@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "eslint": "^4.12.1",
-    "istanbul": "^0.4.5",
-    "sinon": "^4.1.2",
-    "tape": "^4.8.0"
-  },
-  "dependencies": {}
+    "name": "electron-comlink",
+    "version": "0.1.0",
+    "description": "Electron compatibility layer for Comlink",
+    "main": "ElectronMessageAdapter.js",
+    "homepage": "https://github.com/mikehall314/electron-comlink",
+    "engines": {
+        "electron": "^9"
+    },
+    "files": [
+        "ElectronMessageAdapter.js"
+    ],
+    "scripts": {
+        "test": "tape test",
+        "pretest": "npm run lint",
+        "lint": "eslint ElectronMessageAdapter.js test/**/*.js",
+        "test:coverage": "nyc tape test"
+    },
+    "repository": "mikehall314/electron-comlink",
+    "keywords": [
+        "electron",
+        "rpc",
+        "comlink"
+    ],
+    "author": "Mike Hall <mikehall314@gmail.com>",
+    "license": "MIT",
+    "devDependencies": {
+        "@puntt/eslint-config": "^1.0.2",
+        "eslint": "^7.7.0",
+        "nyc": "^15.1.0",
+        "sinon": "^9.0.3",
+        "tape": "^5.0.1"
+    },
+    "dependencies": {}
 }

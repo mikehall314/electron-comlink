@@ -3,3 +3,4 @@ parserOptions:
 
 env:
     browser: false
+    node: true
